@@ -1,3 +1,23 @@
+/*
+Package main provides a command-line tool for generating random passwords with advanced options.
+
+The tool allows users to specify the length of the password, include or exclude symbols and numbers, exclude similar characters, and set minimum and maximum length constraints.
+
+Usage:
+
+	password_generator [flags]
+
+Flags:
+
+	-l, --length int           Length of the password (default 12)
+	-s, --symbols              Include symbols in the password
+	-n, --numbers              Include numbers in the password
+	-x, --exclude-similar      Exclude similar characters (like 1, l, I, 0, O)
+	--min-length int           Minimum length of the password (default 8)
+	--max-length int           Maximum length of the password (default 128)
+	-c, --config string        Path to a configuration file
+	-v, --verbose              Verbose output
+*/
 package main
 
 import (
@@ -23,7 +43,17 @@ const (
 	similarChars          = "lI1oO0"
 )
 
-// Function to generate a random password
+// generatePassword generates a random password based on the specified options.
+//
+// Parameters:
+//   - length: the length of the generated password.
+//   - includeSymbols: whether to include symbols in the password.
+//   - includeNumbers: whether to include numbers in the password.
+//   - excludeSimilar: whether to exclude characters that are similar (like 1, l, I, 0, O).
+//
+// Returns:
+//   - A string representing the generated password.
+//   - An error if password generation fails.
 func generatePassword(length int, includeSymbols, includeNumbers, excludeSimilar bool) (string, error) {
 	if length <= 0 {
 		return "", errors.New("password length must be greater than zero")
@@ -61,7 +91,14 @@ func generatePassword(length int, includeSymbols, includeNumbers, excludeSimilar
 	return string(password), nil
 }
 
-// Filter out similar characters
+// filterChars returns a string with characters excluded from the exclude parameter.
+//
+// Parameters:
+//   - chars: the original set of characters.
+//   - exclude: characters to be excluded from the original set.
+//
+// Returns:
+//   - A string with characters filtered out.
 func filterChars(chars, exclude string) string {
 	var result strings.Builder
 	for _, c := range chars {
@@ -72,7 +109,8 @@ func filterChars(chars, exclude string) string {
 	return result.String()
 }
 
-// Main function using cobra for command-line parsing
+// main is the entry point for the command-line tool. It sets up the Cobra command-line interface
+// and parses the flags to generate a password with the specified options.
 func main() {
 	var length int
 	var includeSymbols, includeNumbers, excludeSimilar bool
